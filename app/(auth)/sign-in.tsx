@@ -1,18 +1,41 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import FormField from "@/components/FormField";
-import CustomButton from "@/components/CustomButton";
-import { Link } from "expo-router";
+import { View, Text, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import FormField from '@/components/FormField';
+import CustomButton from '@/components/CustomButton';
+import { Link, useNavigation } from 'expo-router';
+import axios from 'axios';
+// import { AsyncStorage } from 'react-native';
+
+const API_URL = 'https://api-dev.sendbypass.com/v1/login/';
 
 const SignIn = () => {
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigation = useNavigation();
 
-  function handleSubmit() {}
+  async function handleSubmit() {
+    try {
+      const response = await axios.post(API_URL, form);
+      console.log('🚀 ~ handleSubmit ~ response:', response);
+      AsyncStorage.setItem('userToken', response.data.access);
+      navigation.replace('home');
+      // fetch('https://api-dev.sendbypass.com/v1/login/', {
+      //   headers: {
+      //     accept: 'application/json, text/plain, */*',
+      //     'content-type': 'application/json',
+      //   },
+      //   referrer: 'http://localhost:8081/',
+      //   referrerPolicy: 'strict-origin-when-cross-origin',
+      //   body: '{"email":"rahimi.sina1999@gmail.com","password":"sinasina"}',
+      //   method: 'POST',
+      // });
+    } catch (error) {}
+  }
+
   return (
     <SafeAreaView className="bg-black h-full">
       <ScrollView>
@@ -23,14 +46,14 @@ const SignIn = () => {
           <FormField
             label="Email"
             value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            handleChangeText={e => setForm({ ...form, email: e })}
             className="mt-7"
             keyboardType="email-address"
           />
           <FormField
             label="Password"
             value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            handleChangeText={e => setForm({ ...form, password: e })}
             className="mt-7"
           />
 
