@@ -1,36 +1,45 @@
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { Feather } from "@expo/vector-icons";
-import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 
-const Tab = createMaterialBottomTabNavigator();
+const tabs = [
+  {
+    name: "home",
+    title: "Home",
+    icon: <View className="w-4 h-4 rounded-full bg-red-700"></View>,
+  },
+  {
+    name: "bookmark",
+    title: "Bookmark",
+    icon: <View className="w-4 h-4 rounded-full bg-blue-700"></View>,
+  },
+  {
+    name: "create",
+    title: "Create",
+    icon: <View className="w-4 h-4 rounded-full bg-orange-700"></View>,
+  },
+  {
+    name: "profile",
+    title: "Profile",
+    icon: <View className="w-4 h-4 rounded-full bg-green-700"></View>,
+  },
+];
 
 const TabsLayout = () => {
   return (
     <Tabs>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <Feather name="home" size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Setting",
-          tabBarIcon: ({ color }) => (
-            <Feather name="home" size={24} color={color} />
-          ),
-        }}
-      />
+      {tabs.map((tab) => (
+        <Tabs.Screen
+          key={tab.name}
+          name={tab.name}
+          options={{
+            title: tab.title,
+            tabBarIcon: () => tab.icon,
+          }}
+        />
+      ))}
     </Tabs>
   );
 };
 
 export default TabsLayout;
-
-const styles = StyleSheet.create({});
