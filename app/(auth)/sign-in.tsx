@@ -1,18 +1,18 @@
-import { View, Text, ScrollView } from 'react-native';
-import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import FormField from '@/components/FormField';
-import CustomButton from '@/components/CustomButton';
-import { Link, useNavigation, useRouter } from 'expo-router';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FormField from "@/components/FormField";
+import CustomButton from "@/components/CustomButton";
+import { Link, useNavigation, useRouter } from "expo-router";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = 'https://api-dev.sendbypass.com/v1/login/';
+const API_URL = "https://api-dev.sendbypass.com/v1/login/";
 
 const SignIn = () => {
   const [form, setForm] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -20,9 +20,13 @@ const SignIn = () => {
   async function handleSubmit() {
     try {
       const response = await axios.post(API_URL, form);
-      console.log('🚀 ~ handleSubmit ~ response:', response);
-      AsyncStorage.setItem('userToken', response.data.access);
-      router.replace('/home');
+      // console.log("🚀 ~ handleSubmit ~ response:", response.data);
+      const { access, refresh } = response.data;
+      console.log("🚀 ~ handleSubmit ~ refresh:", refresh);
+      console.log("🚀 ~ handleSubmit ~ access:", access);
+      AsyncStorage.setItem("access", access);
+      AsyncStorage.setItem("refresh", refresh);
+      router.replace("/home");
       // fetch('https://api-dev.sendbypass.com/v1/login/', {
       //   headers: {
       //     accept: 'application/json, text/plain, */*',
@@ -46,14 +50,14 @@ const SignIn = () => {
           <FormField
             label="Email"
             value={form.email}
-            handleChangeText={e => setForm({ ...form, email: e })}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
             className="mt-7"
             keyboardType="email-address"
           />
           <FormField
             label="Password"
             value={form.password}
-            handleChangeText={e => setForm({ ...form, password: e })}
+            handleChangeText={(e) => setForm({ ...form, password: e })}
             className="mt-7"
           />
 
