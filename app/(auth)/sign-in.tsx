@@ -19,6 +19,7 @@ const SignIn = () => {
 
   async function handleSubmit() {
     try {
+      setIsSubmitting(true);
       const response = await axios.post(API_URL, form);
       // console.log("🚀 ~ handleSubmit ~ response:", response.data);
       const { access, refresh } = response.data;
@@ -26,6 +27,7 @@ const SignIn = () => {
       console.log("🚀 ~ handleSubmit ~ access:", access);
       AsyncStorage.setItem("access", access);
       AsyncStorage.setItem("refresh", refresh);
+      setIsSubmitting(false);
       router.replace("/home");
       // fetch('https://api-dev.sendbypass.com/v1/login/', {
       //   headers: {
