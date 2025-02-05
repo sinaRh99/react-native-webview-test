@@ -4,11 +4,13 @@ import {
   KeyboardType,
   TextInput,
   TouchableOpacity,
-} from "react-native";
-import React, { ChangeEvent, useState } from "react";
+  Image,
+} from 'react-native';
+import React, { useState } from 'react';
+import { icons } from '@/constants';
 
 interface Props {
-  label: string;
+  label?: string;
   value: string;
   handleChangeText: (e: string) => void;
   className?: string;
@@ -28,23 +30,24 @@ const FormField = ({
 
   return (
     <View className={`space-y-2 ${className}`}>
-      <Text className="text-base text-gray-100 font-medium">{label}</Text>
-      <View className="w-full h-16 px-4 bg-gray-900 border-2 border-gray-950 rounded-2xl focus:border-purple-400 items-center flex-row">
+      {/* <Text className="text-base text-gray-100 font-medium">{label}</Text> */}
+      <View className="w-full h-16 px-4 pt-1 border-2 rounded-lg border-[#7A7580] focus-within:border-[#67548e] items-center flex-row">
         <TextInput
-          className="flex-1  text-white font-semibold text-base"
+          className="flex-1 text-black font-semibold text-base"
           value={value}
           placeholder={placeholder}
-          placeholderTextColor="#0b0b8b"
+          placeholderTextColor="#7A7580"
           onChangeText={handleChangeText}
-          secureTextEntry={label === "Password" && !showPassword}
+          secureTextEntry={label === 'Password' && !showPassword}
         />
 
-        {label === "Password" && (
-          <TouchableOpacity onPress={() => setShowPassword((perv) => !perv)}>
-            <View
-              className={`w-6 h-6 rounded-full ${
-                showPassword ? "bg-blue-400" : "bg-orange-400"
-              } `}
+        {label === 'Password' && (
+          <TouchableOpacity onPress={() => setShowPassword(perv => !perv)}>
+            <Image
+              source={showPassword ? icons.hide : icons.eye}
+              className="w-8 h-8"
+              resizeMode="contain"
+              tintColor="#7A7580"
             />
           </TouchableOpacity>
         )}

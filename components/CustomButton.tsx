@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React from 'react';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   title: string;
@@ -7,6 +7,7 @@ interface Props {
   containerStyles?: string;
   textStyles?: string;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
 const CustomButton = ({
@@ -15,19 +16,28 @@ const CustomButton = ({
   containerStyles,
   textStyles,
   isLoading,
+  disabled,
 }: Props) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={handlePress}
-      disabled={isLoading}
-      className={`bg-purple-500 rounded-xl min-h-[50px] justify-center items-center ${containerStyles} ${
-        isLoading ? "opacity-50" : ""
-      }`}
+      disabled={isLoading || disabled}
+      className={`rounded-lg py-[12px] justify-center items-center ${
+        disabled ? 'bg-[#E2E2E2]' : 'bg-[#67548e]'
+      } ${containerStyles} ${isLoading ? 'opacity-50' : ''}`}
     >
-      <Text className={`text-primary font-semibold text-lg ${textStyles}`}>
-        {title}
-      </Text>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#ddd" />
+      ) : (
+        <Text
+          className={`text-primary font-medium ${
+            disabled ? 'text-[#bbb]' : 'text-white'
+          } mt-1 text-base ${textStyles}`}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };
