@@ -17,6 +17,8 @@ import {
 import TabItem, { TabObject } from '@/components/TabItem';
 import axios from 'axios';
 import BottomSheet from '@/components/BottomSheet';
+import { Linking } from 'react-native';
+// import CookieManager from '@react-native-cookies/cookies';
 
 interface UserProfileResponse {
   image: string | null;
@@ -70,6 +72,28 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
+    const handleDeepLink = async (event: any) => {
+      // The URL should be something like: yourapp://auth?token=XYZ123
+      const url = event.url;
+      if (url) {
+        // Extract the token. One simple way:
+        const token = url.split('token=')[1];
+        if (token) {
+          console.log('🚀 ~ handleDeepLink ~ token:', token);
+          // Save token for later use
+          await AsyncStorage.setItem('access', token);
+          setAccessToken(token);
+        }
+      }
+    };
+
+    // Add the event listener
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+    // Remove the listener on cleanup
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
     const handleTokenInjectionToWebview = () => {
       const date = new Date();
       date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -83,6 +107,16 @@ const MainPage = () => {
     };
 
     if (!isLoadingWebview) handleTokenInjectionToWebview();
+    // const date = new Date();
+    // date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+    // CookieManager.set('https://webview-test-taupe.vercel.app', {
+    //   name: 'access',
+    //   value: accessToken,
+    //   path: '/',
+    //   expires: date.toUTCString(),
+    // }).then(result => {
+    //   console.log('Cookie has been set:', result);
+    // });
   }, [accessToken, isLoadingWebview]);
 
   function handleWebviewLoaded() {
@@ -99,11 +133,16 @@ const MainPage = () => {
     try {
       const routeSegment = new URL(navState.url).pathname as `/${string}`;
       setCurrentRoute(routeSegment);
-    } catch (error) {}
+    } catch {
+      console.log('error');
+    }
     if (navState.url.includes('/login')) {
+      const signInURL = 'https://webview-test-taupe.vercel.app/login';
+      Linking.openURL(signInURL);
+
       // handleLogout();
       // router.push('/sign-in');
-      setIsBottomSheetOpen(true);
+      // setIsBottomSheetOpen(true);
       return false;
     }
   }
@@ -111,7 +150,11 @@ const MainPage = () => {
   function onWebviewMessage(event: WebViewMessageEvent) {
     const message = event.nativeEvent.data;
     if (message === 'TOKEN_EXPIRED') handleLogout();
-    if (message === 'LOGIN') setIsBottomSheetOpen(true);
+    if (message === 'LOGIN') {
+      const signInURL = 'https://webview-test-taupe.vercel.app/login';
+      Linking.openURL(signInURL);
+      // setIsBottomSheetOpen(true);
+    }
   }
 
   function handleNavigate(route: `/${string}`) {
@@ -157,6 +200,7 @@ const MainPage = () => {
         ref={webViewRef}
         onLoad={handleWebviewLoaded}
         onNavigationStateChange={onNavigationStateChange}
+        sharedCookiesEnabled
         onMessage={onWebviewMessage}
         source={{
           uri: `https://webview-test-taupe.vercel.app${currentRoute}`,

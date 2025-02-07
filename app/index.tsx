@@ -3,8 +3,11 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '@/components/CustomButton';
 import { router } from 'expo-router';
+import * as Linking from 'expo-linking';
 
 const App = () => {
+  const url = Linking.useURL();
+
   return (
     <SafeAreaView className="bg-black h-full">
       <ScrollView
@@ -22,6 +25,7 @@ const App = () => {
           <Text className="text-sm text-gray-100 mt-7 text-center">
             testing combination of native login and webview
           </Text>
+          <Text className="text-white">URL: {url}</Text>
           <CustomButton
             title="Let's go"
             handlePress={() => router.push('/main')}
